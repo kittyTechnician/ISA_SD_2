@@ -35,7 +35,7 @@ static void testMenu(int method) {
 		if (testChoice == 0) break;
 
 		switch (method) {
-		case 1: // Testy dla LinkedListPQ
+		case 1: // Testy dla LinkedList
 			switch (testChoice) {
 			case 1:
 				Test::testLinkedListInsert();
@@ -61,30 +61,30 @@ static void testMenu(int method) {
 			}
 			break;
 
-		//case 2: // Testy dla HeapPQ
-		//	switch (testChoice) {
-		//	case 1:
-		//		Test::testHeapPQInsert();
-		//		break;
-		//	case 2:
-		//		Test::testHeapPQExtractMax();
-		//		break;
-		//	case 3:
-		//		Test::testHeapPQFindMax();
-		//		break;
-		//	case 4:
-		//		Test::testHeapPQModifyKey();
-		//		break;
-		//	case 5:
-		//		Test::testHeapPQInsert();
-		//		Test::testHeapPQExtractMax();
-		//		Test::testHeapPQFindMax();
-		//		Test::testHeapPQModifyKey();
-		//		break;
-		//	default:
-		//		cout << "Niepoprawny test\n";
-		//		break;
-		//	}
+		case 2: // Testy dla MaxHeap
+			switch (testChoice) {
+			case 1:
+				Test::testHeapInsert();
+				break;
+			case 2:
+				Test::testHeapExtractMax();
+				break;
+			case 3:
+				Test::testHeapFindMax();
+				break;
+			case 4:
+				Test::testHeapModifyKey();
+				break;
+			case 5:
+				Test::testHeapInsert();
+				Test::testHeapExtractMax();
+				Test::testHeapFindMax();
+				Test::testHeapModifyKey();
+				break;
+			default:
+				cout << "Niepoprawny test\n";
+				break;
+			}
 			break;
 		}
 	}
@@ -94,8 +94,8 @@ static void testMenu(int method) {
 void menu() {
 	while (true) {
 		cout << "\n--- Wybierz strukture danych do badania ---\n";
-		cout << "1. Kolejka priorytetowa (Lista Wiazana)\n";
-		//cout << "2. Kolejka priorytetowa (Kopiec Binarny)\n";
+		cout << "1. Lista Wiazana\n";
+		cout << "2. Kopiec\n";
 		cout << "0. Wyjscie\n";
 
 		int methodChoice = menuChoice();

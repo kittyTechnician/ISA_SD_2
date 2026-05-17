@@ -16,8 +16,8 @@ public:
     static void testLinkedListModifyKey();
 
     // Testy dla Heap
-    //static void testHeapInsert();
-    //static void testHeapExtractMax();
-    //static void testHeapFindMax();
-    //static void testHeapModifyKey();
+    static void testHeapInsert();
+    static void testHeapExtractMax();
+    static void testHeapFindMax();
+    static void testHeapModifyKey();
 };

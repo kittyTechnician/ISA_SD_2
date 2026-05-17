@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="ISA_SD_2/ISA_SD_2.vcxproj" />
+  <Project Path="ISA_SD_2/ISA_SD_2.vcxproj" Id="099f0c2c-0251-4cf8-8838-11ac2a29c77f" />
 </Solution>

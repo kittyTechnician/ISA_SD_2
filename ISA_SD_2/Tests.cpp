@@ -1,6 +1,6 @@
 #include "Tests.h"
 #include "LinkedList.h"
-//#include "HeapPQ.h"
+#include "MaxHeapPriorityQueue.h"
 
 #include <iostream>
 #include <fstream>
@@ -28,7 +28,7 @@ public:
     int getNext() { return distribution(generator); }
 };
 
-// Uniwersalny szablon funkcji do uruchamiania testów Kolejek Priorytetowych
+// szablon funkcji do uruchamiania testów
 template <typename QueueType>
 static void runTest(const string& testName, const string& fileName, function<void(QueueType&, int, int)> testedfunction, bool isModifyKey = false) {
 
@@ -47,13 +47,13 @@ static void runTest(const string& testName, const string& fileName, function<voi
 
         for (int reps = 0; reps < Test::REPETITIONS; ++reps) {
             vector<QueueType> instances(Test::COPIES);
-            vector<int> targetElements(Test::COPIES); // Każda instancja ma swój własny cel
-            vector<int> actionValues(Test::COPIES);   // Wartości do operacji wstawiania
-            vector<int> actionPrios(Test::COPIES);    // Priorytety do operacji
+            vector<int> targetElements(Test::COPIES); // każda instancja ma swój własny cel
+            vector<int> actionValues(Test::COPIES);   // wartości do operacji wstawiania
+            vector<int> actionPrios(Test::COPIES);    // priorytety do operacji
 
-            // Tworzymy unikalne instancje i dla każdej losujemy inny target
+            // unikalne instancje
             for (int i = 0; i < Test::COPIES; ++i) {
-                // Rozrzucamy seed, aby każda z 20 instancji miała zupełnie inne dane
+                // inny seed dla każdej instancji
                 int currentSeedMod = reps * 100 + i;
 
                 RandomGenerator valGen(Test::SEED + currentSeedMod, 1, 1000000);
@@ -67,13 +67,13 @@ static void runTest(const string& testName, const string& fileName, function<voi
                     int prio = prioGen.getNext();
                     instances[i].insert(val, prio);
 
-                    // Zapisujemy wartość, która wylądowała pod wylosowanym dla tej instancji indeksem
+					// wartość docelowa dla modify_key
                     if (j == targetIndex) {
                         targetElements[i] = val;
                     }
                 }
 
-                // Generowanie losowych danych do samej operacji (jeśli to nie modify_key)
+                // generowanie losowych danych do samej operacji
                 RandomGenerator testValGen(Test::SEED + 3000 + currentSeedMod, 1, 1000000);
                 RandomGenerator testPrioGen(Test::SEED + 4000 + currentSeedMod, 1, size * 5);
 
@@ -81,16 +81,16 @@ static void runTest(const string& testName, const string& fileName, function<voi
                 actionPrios[i] = testPrioGen.getNext();
             }
 
-            // --- WŁAŚCIWY POMIAR CZASU ---
+            // start pomiaru czasu
             auto start = chrono::high_resolution_clock::now();
 
             for (int i = 0; i < Test::COPIES; ++i) {
-                // Wykonujemy operację, gdzie każda instancja otrzymuje swój dedykowany zestaw parametrów
+                // każda instancja otrzymuje swój dedykowany zestaw parametrów
                 testedfunction(instances[i], actionValues[i], actionPrios[i]);
             }
 
             auto end = chrono::high_resolution_clock::now();
-            // -----------------------------
+			// koniec pomiaru czasu
 
             auto duration = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
             totalTime += (static_cast<double>(duration) / Test::COPIES);
@@ -127,7 +127,7 @@ void Test::testLinkedListFindMax() {
 }
 
 void Test::testLinkedListModifyKey() {
-    // Ustawiamy flagę isModifyKey = true
+    // flaga isModifyKey = true
     runTest<LinkedList>("LinkedList_modify_key", "LL_modify_key.csv", [](LinkedList& q, int val, int prio) {
         q.modify_key(val, prio);
         }, true);
@@ -135,28 +135,28 @@ void Test::testLinkedListModifyKey() {
 
 
 // ====================================================================================
-// Testy dla HeapPQ
+// Testy dla Heap
 // ====================================================================================
-//void Test::testHeapPQInsert() {
-//    runTest<HeapPQ<int>>("HeapPQ_insert", "Heap_insert.csv", [](HeapPQ<int>& q, int val, int prio) {
-//        q.insert(val, prio);
-//        });
-//}
-//
-//void Test::testHeapPQExtractMax() {
-//    runTest<HeapPQ<int>>("HeapPQ_extract_max", "Heap_extract_max.csv", [](HeapPQ<int>& q, int val, int prio) {
-//        if (q.return_size() > 0) q.extract_max();
-//        });
-//}
-//
-//void Test::testHeapPQFindMax() {
-//    runTest<HeapPQ<int>>("HeapPQ_find_max", "Heap_find_max.csv", [](HeapPQ<int>& q, int val, int prio) {
-//        if (q.return_size() > 0) q.find_max();
-//        });
-//}
-//
-//void Test::testHeapPQModifyKey() {
-//    runTest<HeapPQ<int>>("HeapPQ_modify_key", "Heap_modify_key.csv", [](HeapPQ<int>& q, int val, int prio) {
-//        q.modify_key(val, prio);
-//        }, true);
-//}
+void Test::testHeapInsert() {
+    runTest<MaxHeapPriorityQueue>("Heap_insert", "Heap_insert.csv", [](MaxHeapPriorityQueue& q, int val, int prio) {
+        q.insert(val, prio);
+        });
+}
+
+void Test::testHeapExtractMax() {
+    runTest<MaxHeapPriorityQueue>("Heap_extract_max", "Heap_extract_max.csv", [](MaxHeapPriorityQueue& q, int val, int prio) {
+        if (q.returnSize() > 0) q.extractMax();
+        });
+}
+
+void Test::testHeapFindMax() {
+    runTest<MaxHeapPriorityQueue>("Heap_find_max", "Heap_find_max.csv", [](MaxHeapPriorityQueue& q, int val, int prio) {
+        if (q.returnSize() > 0) q.peek();
+        });
+}
+
+void Test::testHeapModifyKey() {
+    runTest<MaxHeapPriorityQueue>("Heap_modify_key", "Heap_modify_key.csv", [](MaxHeapPriorityQueue& q, int val, int prio) {
+        q.modifyKey(val, prio);
+        }, true);
+}
