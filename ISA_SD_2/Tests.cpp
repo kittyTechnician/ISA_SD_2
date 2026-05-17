@@ -133,6 +133,12 @@ void Test::testLinkedListModifyKey() {
         }, true);
 }
 
+void Test::testLinkedListReturnSize() {
+    runTest<LinkedList>("LinkedList_return_size", "LL_return_size.csv", [](LinkedList& q, int val, int prio) {
+        q.return_size();
+        });
+}
+
 
 // ====================================================================================
 // Testy dla Heap
@@ -159,4 +165,10 @@ void Test::testHeapModifyKey() {
     runTest<MaxHeapPriorityQueue>("Heap_modify_key", "Heap_modify_key.csv", [](MaxHeapPriorityQueue& q, int val, int prio) {
         q.modifyKey(val, prio);
         }, true);
+}
+
+void Test::testHeapReturnSize() {
+    runTest<MaxHeapPriorityQueue>("Heap_return_size", "Heap_return_size.csv", [](MaxHeapPriorityQueue& q, int val, int prio) {
+        q.returnSize();
+        });
 }

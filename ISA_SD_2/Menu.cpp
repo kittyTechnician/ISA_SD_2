@@ -28,7 +28,8 @@ static void testMenu(int method) {
 		cout << "2. extract-max() (usuniecie i pobranie maxa)\n";
 		cout << "3. find-max() / peek() (podglad elementu max)\n";
 		cout << "4. modify-key(e, p) (zmiana priorytetu istniejacego elementu)\n";
-		cout << "5. Wszystkie testy (uruchamia powyzsze po kolei)\n";
+		cout << "5. return-size() (pobranie rozmiaru kolejki)\n";
+		cout << "6. Wszystkie testy (uruchamia powyzsze po kolei)\n";
 		cout << "0. Powrot\n";
 
 		int testChoice = menuChoice();
@@ -50,10 +51,14 @@ static void testMenu(int method) {
 				Test::testLinkedListModifyKey();
 				break;
 			case 5:
+				Test::testLinkedListReturnSize();
+				break;
+			case 6:
 				Test::testLinkedListInsert();
 				Test::testLinkedListExtractMax();
 				Test::testLinkedListFindMax();
 				Test::testLinkedListModifyKey();
+				Test::testLinkedListReturnSize();
 				break;
 			default:
 				cout << "Niepoprawny test\n";
@@ -76,10 +81,15 @@ static void testMenu(int method) {
 				Test::testHeapModifyKey();
 				break;
 			case 5:
+				Test::testHeapReturnSize();
+				break;
+			case 6:
+				Test::
 				Test::testHeapInsert();
 				Test::testHeapExtractMax();
 				Test::testHeapFindMax();
 				Test::testHeapModifyKey();
+				Test::testHeapReturnSize();
 				break;
 			default:
 				cout << "Niepoprawny test\n";

@@ -129,12 +129,14 @@
   <ItemGroup>
     <ClCompile Include="ISA_SD_2.cpp" />
     <ClCompile Include="LinkedList.cpp" />
+    <ClCompile Include="MaxHeapPriorityQueue.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Element.h" />
     <ClInclude Include="LinkedList.h" />
+    <ClInclude Include="MaxHeapPriorityQueue.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="PQ.h" />
     <ClInclude Include="Tests.h" />

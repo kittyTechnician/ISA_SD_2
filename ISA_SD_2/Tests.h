@@ -14,10 +14,12 @@ public:
     static void testLinkedListExtractMax();
     static void testLinkedListFindMax();
     static void testLinkedListModifyKey();
+	static void testLinkedListReturnSize();
 
     // Testy dla Heap
     static void testHeapInsert();
     static void testHeapExtractMax();
     static void testHeapFindMax();
     static void testHeapModifyKey();
+	static void testHeapReturnSize();
 };
