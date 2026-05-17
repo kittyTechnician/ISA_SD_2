@@ -1,0 +1,110 @@
+#include "Menu.h"
+#include "Tests.h"
+#include <iostream>
+
+using namespace std;
+
+//funkcja do czyszczenia bledow wejscia 
+static void clearInput() {
+	cin.clear();
+	cin.ignore(100, '\n');
+}
+
+//funkcja zbierajaca input od uzytkownika
+static int menuChoice() {
+	int choice;
+	while (!(cin >> choice)) {
+		clearInput();
+		cout << "Niepoprawny wybor, sprobuj ponownie. \n";
+	}
+	return choice;
+}
+
+//funkcja wyswietlajaca menu testow dla wybranej struktury danych
+static void testMenu(int method) {
+	while (true) {
+		cout << "\n--- Wybierz operacje do przetestowania ---\n";
+		cout << "1. insert(e, p) (dodanie elementu z losowym priorytetem)\n";
+		cout << "2. extract-max() (usuniecie i pobranie maxa)\n";
+		cout << "3. find-max() / peek() (podglad elementu max)\n";
+		cout << "4. modify-key(e, p) (zmiana priorytetu istniejacego elementu)\n";
+		cout << "5. Wszystkie testy (uruchamia powyzsze po kolei)\n";
+		cout << "0. Powrot\n";
+
+		int testChoice = menuChoice();
+		if (testChoice == 0) break;
+
+		switch (method) {
+		case 1: // Testy dla LinkedListPQ
+			switch (testChoice) {
+			case 1:
+				Test::testLinkedListInsert();
+				break;
+			case 2:
+				Test::testLinkedListExtractMax();
+				break;
+			case 3:
+				Test::testLinkedListFindMax();
+				break;
+			case 4:
+				Test::testLinkedListModifyKey();
+				break;
+			case 5:
+				Test::testLinkedListInsert();
+				Test::testLinkedListExtractMax();
+				Test::testLinkedListFindMax();
+				Test::testLinkedListModifyKey();
+				break;
+			default:
+				cout << "Niepoprawny test\n";
+				break;
+			}
+			break;
+
+		//case 2: // Testy dla HeapPQ
+		//	switch (testChoice) {
+		//	case 1:
+		//		Test::testHeapPQInsert();
+		//		break;
+		//	case 2:
+		//		Test::testHeapPQExtractMax();
+		//		break;
+		//	case 3:
+		//		Test::testHeapPQFindMax();
+		//		break;
+		//	case 4:
+		//		Test::testHeapPQModifyKey();
+		//		break;
+		//	case 5:
+		//		Test::testHeapPQInsert();
+		//		Test::testHeapPQExtractMax();
+		//		Test::testHeapPQFindMax();
+		//		Test::testHeapPQModifyKey();
+		//		break;
+		//	default:
+		//		cout << "Niepoprawny test\n";
+		//		break;
+		//	}
+			break;
+		}
+	}
+}
+
+//funkcja wyswietlajaca glowne menu, pozwalajace na wybor struktury danych do testowania
+void menu() {
+	while (true) {
+		cout << "\n--- Wybierz strukture danych do badania ---\n";
+		cout << "1. Kolejka priorytetowa (Lista Wiazana)\n";
+		//cout << "2. Kolejka priorytetowa (Kopiec Binarny)\n";
+		cout << "0. Wyjscie\n";
+
+		int methodChoice = menuChoice();
+		if (methodChoice == 0) break;
+		if (methodChoice >= 1 && methodChoice <= 2) {
+			testMenu(methodChoice);
+		}
+		else {
+			cout << "Niepoprawna struktura\n";
+		}
+	}
+}
