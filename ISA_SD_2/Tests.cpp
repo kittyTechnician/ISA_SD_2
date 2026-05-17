@@ -14,11 +14,11 @@ using namespace std;
 
 const int Test::REPETITIONS = 10; // 10 powtórzeń dla każdego testu
 const int Test::SEED = 6767;      // stały seed
-const int Test::COPIES = 20;      // mniejsza liczba kopii (optymalizacja czasu generowania list)
-const vector<int> Test::SIZES = { 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000 };
+const int Test::COPIES = 10;      // mniejsza liczba kopii (optymalizacja czasu generowania list)
+const vector<int> Test::SIZES = { 5000, 8000, 10000, 16000, 20000, 40000, 80000, 100000};
 
 
-// Generator liczb losowych
+// gnerator liczb losowych
 class RandomGenerator {
 private:
     std::mt19937 generator;
@@ -46,53 +46,61 @@ static void runTest(const string& testName, const string& fileName, function<voi
         double totalTime = 0.0;
 
         for (int reps = 0; reps < Test::REPETITIONS; ++reps) {
-            vector<QueueType> instances(Test::COPIES);
-            vector<int> targetElements(Test::COPIES); // każda instancja ma swój własny cel
-            vector<int> actionValues(Test::COPIES);   // wartości do operacji wstawiania
-            vector<int> actionPrios(Test::COPIES);    // priorytety do operacji
 
-            // unikalne instancje
+			// jedna strukutura danych, na której wykonywa się 20 kopii danej operacji
+            QueueType instance;
+
+            vector<int> actionValues(Test::COPIES);
+            vector<int> actionPrios(Test::COPIES);
+
+            // wektor pomocniczy
+            vector<int> insertedValues;
+            if (size > 0) insertedValues.reserve(size);
+
+            int currentSeedMod = reps * 100;
+
+            RandomGenerator valGen(Test::SEED + currentSeedMod, 1, 1000000);
+            RandomGenerator prioGen(Test::SEED + 1000 + currentSeedMod, 1, size * 5);
+
+            // budowanie struktury
+            for (int j = 0; j < size; ++j) {
+                int val = valGen.getNext();
+                int prio = prioGen.getNext();
+                instance.insert(val, prio);
+
+                // wartość zapamiętana, żeby móc ją potem wylosować dla modify_key
+                if (isModifyKey) insertedValues.push_back(val);
+            }
+
+            // przygotowanie 20 różnych wartości/priorytetów do operacji
+            RandomGenerator targetIndexGen(Test::SEED + 2000 + currentSeedMod, 0, size > 0 ? size - 1 : 0);
+            RandomGenerator testValGen(Test::SEED + 3000 + currentSeedMod, 1, 1000000);
+            RandomGenerator testPrioGen(Test::SEED + 4000 + currentSeedMod, 1, size * 5);
+
             for (int i = 0; i < Test::COPIES; ++i) {
-                // inny seed dla każdej instancji
-                int currentSeedMod = reps * 100 + i;
-
-                RandomGenerator valGen(Test::SEED + currentSeedMod, 1, 1000000);
-                RandomGenerator prioGen(Test::SEED + 1000 + currentSeedMod, 1, size * 5);
-                RandomGenerator targetGen(Test::SEED + 2000 + currentSeedMod, 0, size > 0 ? size - 1 : 0);
-
-                int targetIndex = targetGen.getNext();
-
-                for (int j = 0; j < size; ++j) {
-                    int val = valGen.getNext();
-                    int prio = prioGen.getNext();
-                    instances[i].insert(val, prio);
-
-					// wartość docelowa dla modify_key
-                    if (j == targetIndex) {
-                        targetElements[i] = val;
-                    }
+                if (isModifyKey && size > 0) {
+                    int randomIndex = targetIndexGen.getNext();
+                    actionValues[i] = insertedValues[randomIndex];
                 }
-
-                // generowanie losowych danych do samej operacji
-                RandomGenerator testValGen(Test::SEED + 3000 + currentSeedMod, 1, 1000000);
-                RandomGenerator testPrioGen(Test::SEED + 4000 + currentSeedMod, 1, size * 5);
-
-                actionValues[i] = isModifyKey ? targetElements[i] : testValGen.getNext();
+                else {
+                    actionValues[i] = testValGen.getNext();
+                }
                 actionPrios[i] = testPrioGen.getNext();
             }
 
-            // start pomiaru czasu
+            // start timera
             auto start = chrono::high_resolution_clock::now();
 
+            // Uderzamy 20 razy w tę samą strukturę
             for (int i = 0; i < Test::COPIES; ++i) {
-                // każda instancja otrzymuje swój dedykowany zestaw parametrów
-                testedfunction(instances[i], actionValues[i], actionPrios[i]);
+                testedfunction(instance, actionValues[i], actionPrios[i]);
             }
 
             auto end = chrono::high_resolution_clock::now();
-			// koniec pomiaru czasu
+            // koniec timera
 
             auto duration = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+
             totalTime += (static_cast<double>(duration) / Test::COPIES);
         }
 
